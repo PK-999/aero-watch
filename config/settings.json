@@ -6,13 +6,20 @@
         "auth_url": "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token"
     },
     "tracking": {
-        "poll_interval": 15,
-        "token_buffer_seconds": 60
+        "poll_interval": 10,
+        "token_buffer_seconds": 60,
+        "ignore_ground_aircraft": false,
+        "predictive_warning": true,
+        "warning_lead_time_seconds": 60,
+        "surveillance_buffer_degrees": 0.15,
+        "notify_on_entry": true,
+        "notify_on_departure": true
     },
     "notifications": {
         "enabled": true,
         "sound": true,
-        "timeout": 30
+        "timeout": 30,
+        "auto_open_url": false
     },
     "adsb_exchange": {
         "base_url": "https://globe.adsbexchange.com"

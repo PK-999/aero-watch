@@ -1,14 +1,12 @@
 # Aero Watch ✈️
 
-My desk at [InMobi](https://www.inmobi.com/) is right next to a window, and I get a clear view of planes flying around HAL Airport. I built a tool that sends me a little notification whenever one flies by - with flight details and route information.
+My desk at Quantiphi Analytics, in [Trifecta Addatto, Bengaluru](https://maps.app.goo.gl/d3s718Q8Vz1y8P8c6), is right next to a window, and I get a clear view of planes flying around HAL Airport. I built a tool that sends me a little notification whenever one flies by - with flight details and route information.
 
 Flight data is publicly broadcasted through ADS-B signals and you can even see it live on sites like [ADSB Exchange](https://globe.adsbexchange.com). So I tapped into it and added a personal touch.
 
 Now, every time a plane passes, my system goes: *"Hey, look up!"* with all the flight details. Sometimes it's a private charter, sometimes a training flight, and once it was an old air force jet.
 
 Kind of like birdwatching, but for planes. 🛬
-
-**This project went viral on Twitter:** [Check out the original post](https://x.com/the2ndfloorguy/status/1945750355096310213)
 
 ## Features
 
@@ -83,7 +81,3 @@ aero-watch/
 ├── config_manager.py      # Configuration management
 └── requirements.txt       # Python dependencies
 ```
-
-## Built with ❤️ by
-
-[Pankaj Tanwar](https://twitter.com/the2ndfloorguy), and checkout his [other side-hustles](https://pankajtanwar.in/side-hustles)

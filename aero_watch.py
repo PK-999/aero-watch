@@ -1,6 +1,18 @@
 #!/usr/bin/env python3
-import argparse
+import os
 import sys
+from pathlib import Path
+
+# Auto-switch to local .venv if dependencies are missing in current environment
+try:
+    import requests
+except ModuleNotFoundError:
+    venv_python = Path(__file__).resolve().parent / ".venv" / "bin" / "python3"
+    if venv_python.exists() and sys.executable != str(venv_python):
+        os.execv(str(venv_python), [str(venv_python)] + sys.argv)
+    raise
+
+import argparse
 from flight_tracker import FlightTracker
 from config_manager import Config
 

@@ -13,7 +13,14 @@ class AuthManager:
         if self.access_token and time.time() < self.token_expires_at:
             return self.access_token
         
-        print("Getting new access token...")
+        import os
+        client_id = os.environ.get("OPENSKY_CLIENT_ID") or self.auth_config.get("client_id")
+        client_secret = os.environ.get("OPENSKY_CLIENT_SECRET") or self.auth_config.get("client_secret")
+        
+        if not client_id or client_id in ["<client_id>", ""]:
+            return None
+        
+        print("Getting new access token from OpenSky...")
         
         try:
             response = requests.post(
@@ -21,8 +28,8 @@ class AuthManager:
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
                 data={
                     "grant_type": "client_credentials",
-                    "client_id": self.auth_config["client_id"],
-                    "client_secret": self.auth_config["client_secret"]
+                    "client_id": client_id,
+                    "client_secret": client_secret
                 },
                 timeout=10
             )
