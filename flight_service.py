@@ -1,3 +1,11 @@
+"""
+Aero Watch - Flight Service & Multi-Feeder Data Enrichment
+Originally created by Pankaj Tanwar (https://github.com/Pankajtanwarbanna/aero-watch)
+Enhanced by Puneeth Kakarla (https://github.com/PK-999/aero-watch):
+- Zero-auth multi-feeder ADS-B query (adsb.fi, adsb.lol)
+- Live aircraft registry lookup (adsbdb, hexdb.io) for full aircraft models and operators
+- Fallback to OpenSky Network API
+"""
 import requests
 import time
 from auth_manager import AuthManager

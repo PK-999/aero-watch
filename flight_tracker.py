@@ -1,3 +1,11 @@
+"""
+Aero Watch - Core Flight Tracker Engine
+Originally created by Pankaj Tanwar (https://github.com/Pankajtanwarbanna/aero-watch)
+Enhanced by Puneeth Kakarla (https://github.com/PK-999/aero-watch):
+- Predictive trajectory entry calculation (Liang-Barsky 2D ray-box projection)
+- Takeoff and climb-out detection
+- Airspace departure tracking
+"""
 import time
 import math
 from flight_service import FlightService

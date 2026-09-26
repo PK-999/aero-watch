@@ -1,3 +1,10 @@
+"""
+Aero Watch - Notification Manager
+Originally created by Pankaj Tanwar (https://github.com/Pankajtanwarbanna/aero-watch)
+Enhanced by Puneeth Kakarla (https://github.com/PK-999/aero-watch):
+- System Events AppleScript execution (avoids opening empty Script Editor window)
+- terminal-notifier fallback with URL click handler
+"""
 import subprocess
 from config_manager import Config
 

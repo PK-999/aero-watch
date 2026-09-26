@@ -1,4 +1,12 @@
 #!/usr/bin/env python3
+"""
+Aero Watch ✈️ - Desktop Airspace & Flight Tracker
+Originally created by Pankaj Tanwar (https://github.com/Pankajtanwarbanna/aero-watch)
+Enhanced edition by Puneeth Kakarla (https://github.com/PK-999/aero-watch)
+
+Monitors local airspace using public ADS-B telemetry and broadcasts real-time macOS
+notifications with predictive early warning, takeoff tracking, and aircraft metadata.
+"""
 import os
 import sys
 from pathlib import Path
