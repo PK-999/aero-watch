@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aero-watch"
+version = "2.0.0"
+description = "A desktop airspace tracker with predictive flight alerts"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{name = "Pankaj Tanwar"}, {name = "Puneeth Kakarla"}]
+dependencies = ["requests>=2.32,<3"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "ruff>=0.11,<1", "build>=1,<2"]
+
+[project.scripts]
+aero-watch = "aerowatch.cli:main"
+
+[project.urls]
+Repository = "https://github.com/PK-999/aero-watch"
+"Original project" = "https://github.com/Pankajtanwarbanna/aero-watch"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+aerowatch = ["data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]

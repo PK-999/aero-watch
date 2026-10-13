@@ -1,0 +1,23 @@
+{
+    "blr_airport": {
+        "name": "BLR Airport (Kempegowda)",
+        "lamin": 13.1600,
+        "lamax": 13.2400,
+        "lomin": 77.6600,
+        "lomax": 77.7600
+    },
+    "hal_area": {
+        "name": "HAL Area",
+        "lamin": 12.9100,
+        "lamax": 13.0000,
+        "lomin": 77.6200,
+        "lomax": 77.7200
+    },
+    "entire_blr": {
+        "name": "Entire Bangalore",
+        "lamin": 12.2939,
+        "lamax": 13.4076,
+        "lomin": 76.7293,
+        "lomax": 78.2313
+    }
+}
