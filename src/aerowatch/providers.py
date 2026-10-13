@@ -48,9 +48,13 @@ def request_json(session, url: str, *, timeout=(3.5, 3.5), headers=None, **kwarg
 
 
 def finite_number(value) -> float | None:
-    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
         return None
-    return float(value)
+    try:
+        number = float(value)
+    except OverflowError:
+        return None
+    return number if math.isfinite(number) else None
 
 
 def clean_text(value) -> str | None:

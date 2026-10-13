@@ -53,7 +53,13 @@ class AppConfig:
 
 
 def _number(value, label: str, *, minimum=None, positive=False) -> float:
-    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ConfigError(f"{label} must be a finite number")
+    try:
+        number = float(value)
+    except OverflowError as error:
+        raise ConfigError(f"{label} must be a finite number") from error
+    if not math.isfinite(number):
         raise ConfigError(f"{label} must be a finite number")
     if (positive and value <= 0) or (minimum is not None and value < minimum):
         raise ConfigError(f"{label} must be {'positive' if positive else f'at least {minimum}'}")

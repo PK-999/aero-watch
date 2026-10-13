@@ -190,3 +190,12 @@ def test_large_zone_uses_bbox_instead_of_silently_clamping_radius():
     result = service(session).fetch(Bounds(-30, 30, -30, 30))
     assert result.provider == "opensky" and len(result.errors) == 2
     assert session.calls[0][2]["params"]["lamin"] == -30
+
+
+def test_oversized_numeric_record_does_not_hide_valid_neighbor():
+    payload = {
+        "ac": [{"hex": "def456", "lat": 10**400, "lon": 77.67}, fixture("adsb_lol")["ac"][0]]
+    }
+    result = service(Session(Response(payload))).fetch(BOX)
+    assert result.provider == "adsb.lol"
+    assert [aircraft.icao24 for aircraft in result.aircraft] == ["abc123"]

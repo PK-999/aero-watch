@@ -118,3 +118,16 @@ def test_takeoff_emits_once_per_visit_and_resets_after_exit():
     assert run(
         [[GROUND], [INSIDE], [OUTSIDE], [GROUND], [INSIDE]], ignore_ground_aircraft=True
     ) == ["takeoff", "departed", "takeoff"]
+
+
+@pytest.mark.parametrize(
+    "unknown",
+    [
+        replace(APPROACH, track_deg=None),
+        replace(APPROACH, speed_ms=None),
+        replace(APPROACH, on_ground=None),
+    ],
+)
+@pytest.mark.parametrize("next_position", [APPROACH, INSIDE])
+def test_unknown_telemetry_preserves_approach_warning(unknown, next_position):
+    assert run([[APPROACH], [unknown], [next_position]]) == ["incoming"]

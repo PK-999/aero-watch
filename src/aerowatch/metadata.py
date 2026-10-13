@@ -117,6 +117,7 @@ class MetadataService:
         if entry and now < entry.expires:
             entry.used = now
             identity = _merge(live, entry.value)
+            entry.value = identity
         else:
             # Preserve known fields when refreshing returns a sparse/error response.
             identity = self._registry(icao, _merge(live, entry.value) if entry else live)

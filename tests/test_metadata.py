@@ -141,3 +141,23 @@ def test_unused_aircraft_is_evicted():
     instance.lookup(replace(AIRCRAFT, icao24="def456", callsign=""))
     instance.lookup(replace(AIRCRAFT, callsign=""))
     assert len(session.calls) == 3
+
+
+@pytest.mark.parametrize("cache_source", ["empty", "registry"])
+def test_identity_learned_on_cache_hit_survives_sparse_observation(cache_source):
+    sparse = replace(AIRCRAFT, callsign="", registration=None, model=None, type_code=None)
+    responses = (
+        [Response({}), Response({})]
+        if cache_source == "empty"
+        else [Response(fixture("hexdb_aircraft"))]
+    )
+    instance = service(Session(*responses))
+    instance.lookup(sparse)
+    updated = instance.lookup(replace(AIRCRAFT, callsign=""))
+    assert updated.registration == "VT-LIVE"
+    latest = instance.lookup(sparse)
+    assert (
+        latest.registration == "VT-LIVE"
+        and latest.model == "Known model"
+        and latest.type_code == "C25A"
+    )

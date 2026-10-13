@@ -82,7 +82,13 @@ class FlightTracker:
             else:
                 prediction = predict_entry(self.location.bounds, observation) if airborne else None
                 if prediction is None:
-                    state.warned = False
+                    # Missing motion is not evidence that an approach was abandoned.
+                    if observation.on_ground is True or (
+                        airborne
+                        and observation.speed_ms is not None
+                        and observation.track_deg is not None
+                    ):
+                        state.warned = False
                 elif (
                     self.settings.predictive_warning
                     and prediction.eta_seconds <= self.settings.warning_lead_time_seconds

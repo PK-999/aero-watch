@@ -32,7 +32,7 @@ def test_explicit_and_checkout_precedence(config_dir, monkeypatch):
     assert load_config().tracking.poll_interval == 17
 
 
-@pytest.mark.parametrize("value", [0, -1, float("nan"), float("inf"), "10", True])
+@pytest.mark.parametrize("value", [0, -1, float("nan"), float("inf"), 10**400, "10", True])
 @pytest.mark.parametrize("key", ["poll_interval", "warning_lead_time_seconds"])
 def test_invalid_positive_intervals(config_dir, key, value):
     from aerowatch.config import ConfigError, load_config
