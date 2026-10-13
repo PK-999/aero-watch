@@ -1,0 +1,1 @@
+{"ac":[{"hex":"abc123","flight":"TEST123 ","lat":12.95,"lon":77.67,"alt_baro":1000,"alt_geom":1100,"gs":100,"track":90,"baro_rate":600,"squawk":"1200","r":"VT-TEST","t":"C25A","desc":"Test aircraft","seen_pos":1}],"msg":"No error","now":1700000000000,"total":1,"ctime":1700000000000,"ptime":0}

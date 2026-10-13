@@ -7,6 +7,9 @@ import requests
 
 @pytest.fixture(autouse=True)
 def forbid_network(monkeypatch):
+    monkeypatch.delenv("OPENSKY_CLIENT_ID", raising=False)
+    monkeypatch.delenv("OPENSKY_CLIENT_SECRET", raising=False)
+
     def reject(*args, **kwargs):
         raise AssertionError("Tests must inject HTTP sessions, not use live APIs")
 
