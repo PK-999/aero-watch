@@ -1,0 +1,112 @@
+{
+  "bounds": {
+    "lamin": 12.91,
+    "lamax": 13.0,
+    "lomin": 77.62,
+    "lomax": 77.72
+  },
+  "frames": [
+    {
+      "time": 0,
+      "aircraft": [
+        {
+          "icao24": "abc123",
+          "callsign": "DEMO123",
+          "latitude": 12.95,
+          "longitude": 77.59,
+          "on_ground": false,
+          "speed_ms": 100,
+          "track_deg": 90,
+          "baro_altitude_m": 1000,
+          "registration": "VT-DEMO",
+          "model": "Synthetic aircraft"
+        }
+      ]
+    },
+    {
+      "time": 10,
+      "aircraft": [
+        {
+          "icao24": "abc123",
+          "callsign": "DEMO123",
+          "latitude": 12.95,
+          "longitude": 77.67,
+          "on_ground": false,
+          "speed_ms": 100,
+          "track_deg": 90,
+          "baro_altitude_m": 1000,
+          "registration": "VT-DEMO",
+          "model": "Synthetic aircraft"
+        }
+      ]
+    },
+    {
+      "time": 20,
+      "aircraft": [
+        {
+          "icao24": "abc123",
+          "callsign": "DEMO123",
+          "latitude": 12.95,
+          "longitude": 77.73,
+          "on_ground": false,
+          "speed_ms": 100,
+          "track_deg": 90,
+          "baro_altitude_m": 1000,
+          "registration": "VT-DEMO",
+          "model": "Synthetic aircraft"
+        }
+      ]
+    },
+    {
+      "time": 30,
+      "aircraft": [
+        {
+          "icao24": "def456",
+          "callsign": "DEMO456",
+          "latitude": 12.95,
+          "longitude": 77.67,
+          "on_ground": true,
+          "speed_ms": 0,
+          "track_deg": 90,
+          "baro_altitude_m": 0,
+          "registration": "VT-DEMO",
+          "model": "Synthetic aircraft"
+        }
+      ]
+    },
+    {
+      "time": 40,
+      "aircraft": [
+        {
+          "icao24": "def456",
+          "callsign": "DEMO456",
+          "latitude": 12.95,
+          "longitude": 77.67,
+          "on_ground": false,
+          "speed_ms": 100,
+          "track_deg": 90,
+          "baro_altitude_m": 100,
+          "registration": "VT-DEMO",
+          "model": "Synthetic aircraft"
+        }
+      ]
+    },
+    {
+      "time": 50,
+      "aircraft": [
+        {
+          "icao24": "def456",
+          "callsign": "DEMO456",
+          "latitude": 12.95,
+          "longitude": 77.73,
+          "on_ground": false,
+          "speed_ms": 100,
+          "track_deg": 90,
+          "baro_altitude_m": 1000,
+          "registration": "VT-DEMO",
+          "model": "Synthetic aircraft"
+        }
+      ]
+    }
+  ]
+}
