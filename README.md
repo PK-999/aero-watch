@@ -1,191 +1,207 @@
 # Aero Watch ✈️
 
-> **Like birdwatching, but for planes.** 🛬
+**Like birdwatching, but for planes.** A Python CLI that watches a local airspace,
+projects incoming aircraft trajectories, and sends optional macOS notifications
+so you know when to look up.
 
-Originally created by [Pankaj Tanwar](https://twitter.com/the2ndfloorguy) while sitting at [InMobi](https://www.inmobi.com/) next to a window with a view of HAL Airport in Bengaluru ([check out the original viral Twitter post](https://x.com/the2ndfloorguy/status/1945750355096310213) and [original repo](https://github.com/Pankajtanwarbanna/aero-watch)).
+Built on public ADS-B telemetry. This enhanced edition adds predictive warnings,
+observed takeoffs and exits, aircraft metadata, and clickable radar links. It now
+ships as a small Python package with an offline demo, automated tests, and CI.
 
-This enhanced edition is maintained by [Puneeth Kakarla](https://github.com/PK-999) from his desk at Quantiphi Analytics, in [Trifecta Addatto, Bengaluru](https://maps.app.goo.gl/d3s718Q8Vz1y8P8c6), overlooking the same HAL Airport and East Bengaluru flight corridors.
+Originally created by [Pankaj Tanwar](https://github.com/Pankajtanwarbanna/aero-watch),
+looking out over HAL Airport in Bengaluru. Enhanced and maintained by
+[Puneeth Kakarla](https://github.com/PK-999). Both authors are credited in the
+[MIT license](LICENSE).
 
-Flight data is publicly broadcasted through ADS-B signals and visible live on platforms like [ADS-B Exchange](https://globe.adsbexchange.com). Aero Watch monitors the skies over your airspace and sends real-time macOS notifications: *"Hey, look up!"* with complete flight dynamics, aircraft details, and routes.
+## Try it in two minutes
 
----
-
-## 🚀 Key Improvements & Changes from the Original
-
-This fork significantly enhances the original implementation with predictive tracking, departure handling, rich aircraft intelligence, and macOS fixes:
-
-| Feature | Original Implementation | Enhanced Edition (This Version) | Rationale / Benefit |
-| :--- | :--- | :--- | :--- |
-| **Predictive Early Warning** | None (notified only after plane entered bounding box) | **Trajectory Projection (~60s ETA heads-up)** | Uses 2D ray-box intersection (Liang-Barsky) with speed & heading vectors to alert you ~1 min *before* arrival, giving you time to look out the window. |
-| **Takeoff & Departure Detection** | None (ground/parked planes remained silent or ignored) | **`🛫 TAKEOFF` & `🛫 DEPARTED` alerts** | Monitors ground-to-air transitions, initial climb-outs, and airspace departures so flights taking off from HAL or Kempegowda are notified. |
-| **Aircraft & Operator Metadata** | Basic callsign only | **Multi-Source Enrichment (No API keys needed)** | Resolves full aircraft models (e.g. *Cessna Citation CJ2*, *Bombardier Global 6500*), registrations, corporate owners (*Hindalco Industries*), and commercial airlines (*IndiGo*). |
-| **Commercial Flight Routes** | OpenSky OAuth required (401 error if unconfigured) | **Free Multi-Feeder Routing** | Queries public aviation databases (`adsbdb`, `adsb.fi`, `adsb.lol`, `hexdb.io`) to provide city routes (e.g. `HYD → CJB`) with zero authentication needed. |
-| **macOS Notification UX** | Clicking notification opened empty **Script Editor** | **Fixed via `System Events` & Click-to-Open** | Routed AppleScript through `System Events` to stop Script Editor from opening. Supports `terminal-notifier` for direct radar link clicks. |
-| **BLR Airport Geofencing** | Pointed incorrectly to HAL Airport coordinates | **Accurate Kempegowda International Airport** | Corrected `blr_airport` in `locations.json` to real Kempegowda coordinates (`13.16–13.24° N`, `77.66–77.76° E`). |
-| **Flight Dynamics** | Raw altitude in meters only | **Dual Units & Climb/Descent Indicators** | Displays altitude in both meters and feet, vertical rate (`↗ Climbing`, `↘ Descending`, `Level`), speed (`km/h` & `kts`), and compass heading (`111° ESE`). |
-| **Environment Auto-Switch** | Required manual virtualenv activation | **Automatic `.venv` Detection** | Auto-detects local `.venv` and seamlessly switches interpreters if dependencies are missing. |
-
----
-
-## 🔔 Notification Previews
-
-### 1. Predictive Early Warning (~1 min before arrival)
-```text
-⚠️ INCOMING (~58s ETA): VT-NJB • C25A
-Entering from West boundary (Heading East, 92°) • Hindalco Industries Ltd
-
-⏱ ETA: ~58s to HAL Area
-🧭 Entering from West boundary (Heading East, 92°)
-✈️ Aircraft: CESSNA 525A Citation CJ2 [C25A]
-📊 Altitude: 2,743 m (8,999 ft) • ↘ Descending (-1,568 fpm)
-🚀 Speed: 412 km/h (222 kts) • Heading: 92° E
-Click notification to open live radar
-```
-
-### 2. Takeoff & Climb-Out Alert
-```text
-🛫 TAKEOFF: VT-AVS • E50P
-Departing from HAL Area • Aviators (India) P/L
-
-Status: 🛫 Airborne & Climbing out
-Aircraft: EMBRAER EMB-500 Phenom 100
-Altitude: 450 m (1,476 ft) • ↗ Climbing (+1,673 fpm)
-Speed: 270 km/h (145 kts) • Heading: 92° E
-Click notification to open live radar
-```
-
-### 3. Airspace Departure
-```text
-🛫 DEPARTED: VT-AVS • E50P
-Exited HAL Area (Heading East) • Aviators (India) P/L
-
-Status: Departed HAL Area (Heading East)
-Aircraft: EMBRAER EMB-500 Phenom 100
-Altitude: 1,200 m (3,937 ft) • ↗ Climbing (+1,181 fpm)
-Speed: 396 km/h (214 kts) • Heading: 90° E
-```
-
----
-
-## 🛠 Usage
-
-Start tracking your local airspace:
+Requires **Python 3.11+**. Console output works on macOS, Linux, and Windows;
+desktop notifications are supported on macOS.
 
 ```bash
-# Track HAL Airport & East Bengaluru (Whitefield, Mahadevapura, Trifecta Addatto)
-python3 aero_watch.py hal_area
-
-# Track Kempegowda International Airport (BLR) commercial traffic
-python3 aero_watch.py blr_airport
-
-# Monitor the entire Bangalore metropolitan airspace
-python3 aero_watch.py entire_blr
+git clone https://github.com/PK-999/aero-watch.git
+cd aero-watch
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .
+aero-watch --demo
 ```
 
-List all available tracking zones:
+On Windows, activate with `.venv\Scripts\activate` instead. The demo runs offline,
+finishes automatically, and shows synthetic incoming, takeoff, and exit events.
+It does not send desktop notifications. Its coordinates and tracking settings
+are bundled defaults, so changes to your live configuration do not hide events.
+
+Example demo output (synthetic):
+
+```text
+INCOMING (~32s ETA): VT-DEMO
+HAL Area (demo)
+Entering from West boundary • Heading E
+Aircraft: Synthetic aircraft
+Altitude: 1,000 m (3,281 ft)
+Speed: 360 km/h (194 kts)
+Heading: 90° E
+Radar: https://globe.adsbexchange.com/?icao=abc123
+```
+
+## Watch live aircraft
+
 ```bash
-python3 aero_watch.py --list-locations
+aero-watch --list-locations
+aero-watch hal_area --once --no-notifications
+aero-watch hal_area
 ```
 
----
+| Preset | Airspace |
+| --- | --- |
+| `hal_area` | HAL Airport and nearby East Bengaluru |
+| `blr_airport` | Kempegowda International Airport |
+| `entire_blr` | Bengaluru metropolitan area |
 
-## ⚙️ Configuration
+Other supported launch methods:
 
-### `config/settings.json`
+```bash
+python -m aerowatch hal_area
+python aero_watch.py hal_area
+```
+
+For the original script workflow, install `python -m pip install -r requirements.txt`
+and run `python aero_watch.py ...` from the checkout. The installed console and
+module commands require package installation.
+
+| Option | Behavior |
+| --- | --- |
+| `--list-locations` | List presets without a network request |
+| `--config-dir PATH` | Use settings.json and locations.json from PATH |
+| `--once` | Process one live scan and exit |
+| `--demo` | Run the finite offline HAL scenario; optional location is `hal_area` only |
+| `--no-notifications` | Keep alerts in the console |
+| `--verbose` | Include debug diagnostics |
+
+Press Ctrl+C to stop. Exit codes are 0 for success or Ctrl+C, 2 for invalid
+arguments/configuration, and 1 when every provider fails in `--once` mode.
+Continuous tracking reports an outage and tries again after the polling pause.
+
+## What triggers an alert?
+
+- **INCOMING:** an airborne aircraft projects into the target box within your
+  configured warning lead time. One warning per approach.
+- **OVERHEAD:** an aircraft is first seen inside, or enters without a prior
+  incoming warning. A warned visit suppresses the redundant overhead alert.
+- **TAKEOFF:** consecutive observations show ground → air inside the zone.
+  An initially climbing aircraft alone does not establish a takeoff.
+- **DEPARTED:** an aircraft observed airborne inside is subsequently observed
+  outside. Speed and heading do not decide whether it exited.
+
+With ground notifications enabled, initial/entry ground activity appears as
+**ON GROUND**. Ignoring ground activity still retains observations for takeoffs.
+Missing aircraft do not produce an exit alert. A later visit can generate new
+alerts; stale state expires after ten minutes.
+
+## Configuration
+
+Configuration precedence is `--config-dir`, then `./config` when present, then
+packaged defaults. A selected directory must contain both JSON files. Invalid
+values fail early with an actionable error. Checkout files are editable; package
+resources let installed commands run from any directory.
+
+Tracking settings in [config/settings.json](config/settings.json):
+
+| Setting | Default | Meaning |
+| --- | --- | --- |
+| `poll_interval` | `10` | Pause in seconds after each scan is processed |
+| `predictive_warning` | `true` | Enable projected-entry warnings |
+| `warning_lead_time_seconds` | `60` | Warn when ETA is positive and no greater than this value |
+| `surveillance_buffer_degrees` | `0.15` | Expand the fetch box around the target zone |
+| `ignore_ground_aircraft` | `false` | Suppress ground activity alerts while retaining transition history |
+| `notify_on_entry` | `true` | Enable overhead/ground entry activity |
+| `notify_on_departure` | `true` | Enable both takeoff and exit alerts |
+| `token_buffer_seconds` | `60` | Refresh optional OpenSky tokens before expiry |
+
+Notification settings are `enabled`, `sound`, and `auto_open_url` (default
+`false`). The legacy `timeout` setting is accepted for configuration compatibility;
+macOS controls banner duration, and desktop subprocess waits are bounded.
+`adsb_exchange.base_url` controls the radar link. Optional `opensky.base_url` and
+`opensky.auth_url` retain telemetry fallback configuration.
+
+Add custom areas to [config/locations.json](config/locations.json):
+
 ```json
 {
-    "tracking": {
-        "poll_interval": 10,
-        "token_buffer_seconds": 60,
-        "ignore_ground_aircraft": false,
-        "predictive_warning": true,
-        "warning_lead_time_seconds": 60,
-        "surveillance_buffer_degrees": 0.15,
-        "notify_on_entry": true,
-        "notify_on_departure": true
-    },
-    "notifications": {
-        "enabled": true,
-        "sound": true,
-        "timeout": 30,
-        "auto_open_url": false
-    },
-    "adsb_exchange": {
-        "base_url": "https://globe.adsbexchange.com"
-    }
+  "my_area": {
+    "name": "My viewing spot",
+    "lamin": 12.91,
+    "lamax": 13.00,
+    "lomin": 77.62,
+    "lomax": 77.72
+  }
 }
 ```
 
-- `predictive_warning`: Enables trajectory calculation and alerts ~60s before entry.
-- `notify_on_departure`: Notifies when an aircraft takes off or departs the airspace.
-- `ignore_ground_aircraft`: Set to `true` if you only want airborne flights and want to ignore stationary parked planes.
-- `surveillance_buffer_degrees`: Buffer margin around the target box used for predictive trajectory analysis (~0.15° ≈ 16 km).
+Coordinates must describe a nonzero box within valid latitude/longitude ranges.
+Reversed bounds are normalized; antimeridian-spanning areas are unsupported.
 
-### `config/locations.json`
-Define any custom tracking area with bounding latitude/longitude coordinates:
-```json
-{
-    "blr_airport": {
-        "name": "BLR Airport (Kempegowda)",
-        "lamin": 13.1600,
-        "lamax": 13.2400,
-        "lomin": 77.6600,
-        "lomax": 77.7600
-    },
-    "hal_area": {
-        "name": "HAL Area",
-        "lamin": 12.9100,
-        "lamax": 13.0000,
-        "lomin": 77.6200,
-        "lomax": 77.7200
-    },
-    "entire_blr": {
-        "name": "Entire Bangalore",
-        "lamin": 12.2939,
-        "lamax": 13.4076,
-        "lomin": 76.7293,
-        "lomax": 78.2313
-    }
-}
+## macOS notifications
+
+Install the optional notifier for click-to-open radar links:
+
+```bash
+brew install terminal-notifier
 ```
 
----
+Enable terminal-notifier in **System Settings → Notifications** and check Focus
+settings if alerts do not appear. The app prefers terminal-notifier and falls
+back to AppleScript through System Events. The fallback cannot open the radar on
+click; it prints the radar URL instead. `auto_open_url=true` opens the URL
+immediately when using that fallback. Notification failures keep console alerts
+working. Banner duration and visibility depend on macOS notification settings.
+See the [terminal-notifier documentation](https://github.com/julienXX/terminal-notifier).
 
-## 📦 Setup & Requirements
+## Data sources and limits
 
-1. **Python Dependencies**:
-   ```bash
-   pip3 install -r requirements.txt
-   ```
-2. **Clickable macOS Notifications (Recommended)**:
-   ```bash
-   brew install terminal-notifier
-   ```
-   *Tip: In ** System Settings > Notifications > terminal-notifier**, ensure **Allow Notifications** is enabled so notifications can open the live ADS-B radar view in your browser when clicked.*
+Telemetry uses ordered failover: [adsb.lol](https://www.adsb.lol/),
+[adsb.fi](https://adsb.fi/), then [OpenSky Network](https://opensky-network.org/).
+A healthy empty scan ends the search. This replaces the earlier version's
+three-feed merging, so coverage can differ. Explicit positions older than 60
+seconds are skipped. Failures and rate limits are reported separately from empty
+skies; provider-specific cooldowns honor Retry-After.
 
----
+Aircraft identity comes from live feeder fields and best-effort
+[hexdb](https://hexdb.io/) / [adsbdb](https://www.adsbdb.com/) lookups. Routes are
+cached callsign associations from adsbdb and may be missing or inaccurate. The
+[OpenSky historical flights endpoint](https://openskynetwork.github.io/opensky-api/rest.html)
+is not used to infer current routes. Optional OpenSky credentials use
+`OPENSKY_CLIENT_ID` and `OPENSKY_CLIENT_SECRET` environment variables; no keys are
+needed for the default community telemetry providers.
 
-## 📁 Project Structure
+Public data depends on receiver coverage, freshness, and provider availability.
+Warnings assume a straight-line trajectory, so turns can change the ETA. Network
+and optional enrichment time add latency; the polling pause is not a guaranteed
+alert cadence. This is a hobby aircraft-spotting tool and has no operational
+aviation role. Follow each provider's usage terms, including the
+[adsb.fi personal/noncommercial terms and request limits](https://github.com/adsbfi/opendata).
 
-```text
-aero-watch/
-├── config/
-│   ├── locations.json         # Airspace geographic boundaries
-│   └── settings.json          # Polling, predictive, and alert settings
-├── aero_watch.py             # CLI entrypoint with auto-venv switcher
-├── flight_tracker.py         # Trajectory prediction, takeoff/exit & tracking logic
-├── flight_service.py         # Multi-feeder ADS-B & aircraft metadata integration
-├── auth_manager.py           # OpenSky authentication (with env var fallback)
-├── notification_manager.py    # macOS System Events & terminal-notifier handler
-├── config_manager.py         # Configuration loader
-├── requirements.txt          # Python dependencies
-├── LICENSE                   # MIT License
-└── README.md
+## Development and verification
+
+```bash
+python -m pip install -e '.[dev]'
+python -m pytest -q
+python -m ruff check .
+python -m ruff format --check .
+python -m build
+python scripts/verify_install.py dist/*.whl
 ```
 
----
+Tests use synthetic provider fixtures and blocked live HTTP. CI checks Python
+3.11 and 3.14, lint/format, tests, and package builds. The install verifier creates
+a fresh virtual environment, downloads the wheel's dependencies, and runs help,
+location listing, and both demo entry points outside the repo with networking
+blocked during those application commands. A successful mock notification test
+does not prove desktop visibility or radar clicks; those need a macOS smoke check.
 
-## ❤️ Credits & Attribution
+Read [the architecture](docs/architecture.md) for module boundaries and data flow,
+and [the contributing guide](CONTRIBUTING.md) for the development workflow.
 
-- **Original Creator & Concept**: [Pankaj Tanwar](https://twitter.com/the2ndfloorguy) ([Pankaj's Twitter](https://twitter.com/the2ndfloorguy), [Original Repository](https://github.com/Pankajtanwarbanna/aero-watch), [Side Hustles](https://pankajtanwar.in/side-hustles)).
-- **Enhanced Edition & Predictive Engine**: [Puneeth Kakarla](https://github.com/PK-999) (Quantiphi Analytics, Bengaluru).
+See the [verification record](docs/verification.md) for checks performed locally
+and the native desktop check still outstanding.
